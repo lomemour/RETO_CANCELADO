@@ -84,7 +84,7 @@ st.markdown("""
 def load_and_process_data():
     df = pd.read_csv("BASE.csv")
     
-    # Limpieza de nulos basados en la bitácora del proyecto[cite: 1, 2]
+    # Limpieza y preparación basada en los hallazgos de la bitácora[cite: 1, 2]
     df['Antigüedad_Cuenta_Dias'] = df['Antigüedad_Cuenta_Dias'].fillna(df['Antigüedad_Cuenta_Dias'].median())
     df['Num_Interacciones'] = df['Num_Interacciones'].fillna(0)
     df['Fecha_Hora_Publicacion'] = pd.to_datetime(df['Fecha_Hora_Publicacion'])
@@ -158,7 +158,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Propagación Temporal", 
     "🔍 Auditoría Explicable (XAI)", 
     "🗺️ Mapa de Coordinación", 
-    "📋 Tablas Analíticas y Datos"
+    "📋 Módulo Completo de Tablas Analíticas"
 ])
 
 # --- TAB 1: PROPAGACIÓN ---
@@ -201,7 +201,7 @@ with tab2:
             st.info(f"**Texto Registrado:** *'{pub['Texto_Publicacion']}'*")
             
             m1, m2, m3 = st.columns(3)
-            m1.metric("Antigüedad de Cuenta", f"{pub['Antigüedad_Cuenta_Dias']} days")
+            m1.metric("Antigüedad de Cuenta", f"{pub['Antigüedad_Cuenta_Dias']} días")
             m2.metric("Velocidad de Viralización", f"{pub['Velocidad_Viralizacion']} ints/min")
             m3.metric("Contenido Reciclado", pub['Contenido_Reciclado'])
             
@@ -236,22 +236,23 @@ with tab3:
     fig_scatter.add_hline(y=10, line_dash="dash", line_color="#c2402d", annotation_text="Umbral de Velocidad Anómala")
     st.plotly_chart(fig_scatter, use_container_width=True)
 
-# --- TAB 4: TABLAS ANALÍTICAS Y DATOS ---
+# --- TAB 4: MÓDULO COMPLETO DE TABLAS ANALÍTICAS ---
 with tab4:
-    st.markdown("### 📊 Módulo de Tablas Especializadas")
-    st.markdown("Consulta rápida de las estructuras analíticas clave del proyecto.")
+    st.markdown("### 📊 Tablas Analíticas Especializadas del Caso")
+    st.markdown("Exploración detallada de las estructuras cuantitativas desarrolladas durante la investigación.")
     
-    subtab1, subtab2, subtab3 = st.tabs([
-        "🚨 Top Cuentas Sospechosas (Bots)", 
-        "🔬 Firma Comportamental (Bots vs Resto)", 
-        "📋 Explorador General de Registros"
+    subtab1, subtab2, subtab3, subtab4, subtab5 = st.tabs([
+        "🚨 1. Top Cuentas Sospechosas", 
+        "🔬 2. Firma Comportamental", 
+        "⚖️ 3. Afirmaciones Sustantivas", 
+        "💼 4. Matriz de Decisiones y Costos", 
+        "📋 5. Explorador de Datos Crudos"
     ])
     
     with subtab1:
-        st.markdown("#### Ranking de Cuentas con Mayor Índice de Anomalía")
-        st.markdown("Cuentas identificadas por el modelo con mayor puntaje de sospecha estructural[cite: 2].")
+        st.markdown("#### Tabla 3 del Proyecto: Cuentas con Mayor Anomalía")
+        st.markdown("Ranking de las cuentas detectadas con mayor puntaje de sospecha estructural y validación de bots[cite: 2].")
         
-        # Generar tabla simulada de cuentas top sospechosas basada en la fuente 2
         df_cuentas_top = df.sort_values(by="Score_Sospecha", ascending=False).head(10)[
             ['Usuario_Handle', 'Score_Sospecha', 'Antigüedad_Cuenta_Dias', 'Num_Seguidores_Cuenta', 'Plataforma', 'Perfil_Usuario']
         ].drop_duplicates(subset=['Usuario_Handle'])
@@ -262,7 +263,7 @@ with tab4:
             column_config={
                 "Score_Sospecha": st.column_config.ProgressColumn(
                     "Puntaje Sospecha",
-                    help="Nivel de anomalía detectado",
+                    help="Nivel de anomalía detectado (0-100)",
                     format="%.1f",
                     min_value=0,
                     max_value=100
@@ -270,15 +271,18 @@ with tab4:
                 "Num_Seguidores_Cuenta": st.column_config.NumberColumn(
                     "Seguidores",
                     format="%d"
+                ),
+                "Antigüedad_Cuenta_Dias": st.column_config.NumberColumn(
+                    "Antigüedad (Días)",
+                    format="%.1f"
                 )
             }
         )
         
     with subtab2:
         st.markdown("#### Tabla Comparativa: Firma Comportamental")
-        st.markdown("Diferencias cuantitativas fundamentales entre las cuentas de brigada/bots y el resto de usuarios[cite: 1].")
+        st.markdown("Diferencias cuantitativas fundamentales entre las cuentas de brigada/bots y el resto de usuarios orgánicos[cite: 1].")
         
-        # Tabla estructurada basada en los hallazgos de la fuente 1
         data_firma = {
             "Métrica Evaluada": [
                 "Seguidores ganados por día de vida (promedio)",
@@ -303,6 +307,68 @@ with tab4:
         st.dataframe(df_firma, use_container_width=True, hide_index=True)
         
     with subtab3:
+        st.markdown("#### Balance de Afirmaciones Sustantivas del Caso")
+        st.markdown("Distribución del peso probatorio entre los argumentos que incriminan frente a los que exculpan[cite: 1, 2].")
+        
+        data_afirmaciones = {
+            "Dimensión Analizada": [
+                "Afirmaciones distintas identificadas",
+                "Publicaciones que las sostienen",
+                "Confiabilidad media (0–100)",
+                "Corroboraciones independientes (promedio)",
+                "Antigüedad mediana de la cuenta",
+                "Peso probatorio total acumulado"
+            ],
+            "Bando que Incrimina": [
+                "4[cite: 1, 2]",
+                "89[cite: 1, 2]",
+                "36,8[cite: 1, 2]",
+                "0,42[cite: 1, 2]",
+                "2,6 días[cite: 1, 2]",
+                "1,69 (8,1 % del total)[cite: 1, 2]"
+            ],
+            "Bando que Exculpa": [
+                "10[cite: 1, 2]",
+                "225[cite: 1, 2]",
+                "69,9[cite: 1, 2]",
+                "2,11[cite: 1, 2]",
+                "632,8 días[cite: 1, 2]",
+                "19,19 (91,9 % del total)[cite: 1, 2]"
+            ]
+        }
+        df_afirmaciones = pd.DataFrame(data_afirmaciones)
+        st.dataframe(df_afirmaciones, use_container_width=True, hide_index=True)
+
+    with subtab4:
+        st.markdown("#### Tabla 4 del Proyecto: Supuestos de Costo y Arrepentimiento")
+        st.markdown("Pérdida esperada en múltiplos del valor anual del contrato para fundamentar la recomendación de negocio[cite: 2].")
+        
+        data_costos = {
+            "Acción a las 6:00 a.m.": [
+                "Mantener el patrocinio",
+                "Pausar 72 horas",
+                "Romper el contrato"
+            ],
+            "Si la acusación era cierta (Pérdida)": [
+                "2,5 × contrato[cite: 2]",
+                "0,8 × contrato[cite: 2]",
+                "0,3 × contrato[cite: 2]"
+            ],
+            "Si la acusación era falsa (Pérdida)": [
+                "0,0 × contrato[cite: 2]",
+                "0,1 × contrato[cite: 2]",
+                "1,8 × contrato[cite: 2]"
+            ],
+            "Arrepentimiento Máximo (Peor caso)": [
+                "0,1839[cite: 2]",
+                "0,0002 (Óptimo)[cite: 2]",
+                "1,4762[cite: 2]"
+            ]
+        }
+        df_costos = pd.DataFrame(data_costos)
+        st.dataframe(df_costos, use_container_width=True, hide_index=True)
+
+    with subtab5:
         st.markdown("#### Explorador General de Registros Procesados")
         st.markdown("Base de datos completa con los veredictos y métricas aplicadas a cada publicación[cite: 1, 2].")
         
