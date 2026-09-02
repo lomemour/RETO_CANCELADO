@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Inyección de CSS personalizado para un look profesional y alejado de lo genérico
+# Inyección de CSS personalizado para un look editorial, limpio y profesional
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -113,7 +113,7 @@ except Exception as e:
     st.stop()
 
 # ==========================================
-# 3. BARRA LATERAL (FILTROS)
+# 3. BARRA LATERAL (FILTROS GLOBALES)
 # ==========================================
 st.sidebar.markdown("### 🎛️ Controles de Análisis")
 st.sidebar.markdown("Filtros globales para la segmentación de evidencias en tiempo real.")
@@ -243,7 +243,7 @@ with tab4:
     st.markdown("### Tabla Estructurada de Datos Procesados")
     st.markdown("Visualización limpia y tabular de los registros con sus respectivas métricas de riesgo calculadas.")
     
-    # Tabla interactiva con formato profesional usando column_config
+    # Tabla interactiva avanzada con barras de progreso y formato numérico limpio
     st.dataframe(
         df_filtered[['ID_Publicacion', 'Usuario_Handle', 'Plataforma', 'Perfil_Usuario', 'Veredicto', 'Score_Sospecha', 'Velocidad_Viralizacion', 'Contenido_Reciclado']],
         use_container_width=True,
