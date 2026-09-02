@@ -27,7 +27,7 @@ def load_data(file):
         (df['Score_Sospecha'] > 30) & (df['Score_Sospecha'] <= 75),
         (df['Score_Sospecha'] <= 30) & (df['Contenido_Reciclado'] != 'Sí')
     ]
-    etiquetas = ['🔴 Rojo (Ruido Fabricado)', '🟡 Amarillo (Dudoso)', '🟢 Verde (Señal Real)']
+    etiquetas = ['🔴 Rojo (No Confiable)', '🟡 Amarillo (Dudoso)', '🟢 Verde (Confiable)']
     df['Veredicto'] = np.select(condiciones, etiquetas, default='🟡 Amarillo (Dudoso)')
     return df
 
@@ -35,13 +35,13 @@ def load_data(file):
 st.title("🛡️ TrustGuard: Sistema Interactivo de Detección")
 st.markdown("Analiza la propagación del rumor de Kai Duarte y separa la señal real del ruido coordinado.")
 
-uploaded_file = st.file_uploader("📂 Sube el archivo BASE.csv para comenzar", type="csv")
+uploaded_file = st.file_uploader(" Sube el archivo BASE.csv para comenzar", type="csv")
 
 if uploaded_file is not None:
     df = load_data(uploaded_file)
     
     # --- BARRA LATERAL (FILTROS INTERACTIVOS) ---
-    st.sidebar.header("🎛️ Filtros Globales")
+    st.sidebar.header(" Filtros Globales")
     st.sidebar.markdown("Usa estos filtros para interactuar con los datos en tiempo real.")
     
     plataformas_sel = st.sidebar.multiselect("Plataforma:", df['Plataforma'].unique(), default=df['Plataforma'].unique())
@@ -56,21 +56,21 @@ if uploaded_file is not None:
     # --- KPIs PRINCIPALES ---
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Publicaciones", f"{len(df_filtered):,}")
-    col2.metric("Alertas Rojas", f"{len(df_filtered[df_filtered['Veredicto'] == '🔴 Rojo (Ruido Fabricado)']):,}")
+    col2.metric("Alertas Rojas", f"{len(df_filtered[df_filtered['Veredicto'] == '🔴 Rojo (No confiable)']):,}")
     col3.metric("Velocidad Máx.", f"{df_filtered['Velocidad_Viralizacion'].max()} ints/min")
     col4.metric("Contenido Reciclado", f"{len(df_filtered[df_filtered['Contenido_Reciclado'] == 'Sí']):,}")
     
     st.divider()
 
     # --- PESTAÑAS ---
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Propagación", "🔍 Auditoría (XAI)", "🗺️ Mapa de Burbujas", "📋 Explorador de Datos"])
+    tab1, tab2, tab3, tab4 = st.tabs([" Propagación", " Auditoría (XAI)", " Mapa de Burbujas", " Explorador de Datos"])
     
     with tab1:
         st.subheader("Evolución del Escándalo")
         fig_timeline = px.histogram(df_filtered, x="Fecha_Hora_Publicacion", color="Veredicto", 
-                                    color_discrete_map={'🔴 Rojo (Ruido Fabricado)':'#ff4b4b', 
+                                    color_discrete_map={'🔴 Rojo ( No confiable)':'#ff4b4b', 
                                                         '🟡 Amarillo (Dudoso)':'#ffaa00', 
-                                                        '🟢 Verde (Señal Real)':'#21c354'},
+                                                        '🟢 Verde ( Confiable)':'#21c354'},
                                     nbins=60, hover_data=["Plataforma"])
         # Hacer el gráfico más interactivo (zoom, pan)
         fig_timeline.update_layout(xaxis_title="Hora", yaxis_title="Volumen de Publicaciones", hovermode="x unified")
@@ -82,7 +82,7 @@ if uploaded_file is not None:
             st.plotly_chart(fig_pie, use_container_width=True)
         with c2:
             fig_bar = px.histogram(df_filtered, y="Perfil_Usuario", color="Veredicto", barmode="stack",
-                                   color_discrete_map={'🔴 Rojo (Ruido Fabricado)':'#ff4b4b', '🟡 Amarillo (Dudoso)':'#ffaa00', '🟢 Verde (Señal Real)':'#21c354'},
+                                   color_discrete_map={'🔴 Rojo (No confiable Fabricado)':'#ff4b4b', '🟡 Amarillo (Dudoso)':'#ffaa00', '🟢 Verde ( Confiable)':'#21c354'},
                                    title="Veredicto vs Tipo de Perfil")
             st.plotly_chart(fig_bar, use_container_width=True)
 
@@ -91,7 +91,7 @@ if uploaded_file is not None:
         st.markdown("Selecciona una cuenta marcada como 'Rojo' para ver la justificación del algoritmo.")
         
         # Selector inteligente
-        df_rojos = df[df['Veredicto'] == '🔴 Rojo (Ruido Fabricado)']
+        df_rojos = df[df['Veredicto'] == '🔴 Rojo ( No confiable)']
         opciones_usuarios = df_rojos['Usuario_Handle'].astype(str) + " (ID: " + df_rojos['ID_Publicacion'].astype(str) + ")"
         seleccion = st.selectbox("Seleccionar cuenta sospechosa para investigar:", opciones_usuarios)
         
@@ -136,9 +136,9 @@ if uploaded_file is not None:
         fig_scatter = px.scatter(df_burbujas, x="Antigüedad_Cuenta_Dias", y="Velocidad_Viralizacion", 
                                  color="Veredicto", size="Interacciones_Visual",
                                  hover_data=["Usuario_Handle", "ID_Publicacion", "Num_Interacciones", "Plataforma"],
-                                 color_discrete_map={'🔴 Rojo (Ruido Fabricado)':'#ff4b4b', 
+                                 color_discrete_map={'🔴 Rojo (No confiable)':'#ff4b4b', 
                                                      '🟡 Amarillo (Dudoso)':'#ffaa00', 
-                                                     '🟢 Verde (Señal Real)':'#21c354'},
+                                                     '🟢 Verde ( Confiable)':'#21c354'},
                                  opacity=0.7, size_max=40)
         
         # Agregar línea de límite seguro
@@ -153,5 +153,5 @@ if uploaded_file is not None:
                      use_container_width=True, height=400)
 
 else:
-    st.info("👆 Por favor, carga el archivo BASE.csv en el botón superior para comenzar.")
+    st.info(" Por favor, carga el archivo BASE.csv en el botón superior para comenzar.")
     st.info(" Por favor, carga el archivo BASE.csv en el botón superior para comenzar.")
