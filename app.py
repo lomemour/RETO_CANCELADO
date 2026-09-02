@@ -13,7 +13,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Inyección de CSS personalizado para un look editorial, limpio y profesional
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -134,7 +133,6 @@ df_filtered = df[
 st.markdown('<p class="main-title">🛡️ TRUSTGUARD · Panel de Inteligencia</p>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Auditoría algorítmica y separación de señal vs. ruido para el caso de crisis digital de Kai Duarte[cite: 1].</p>', unsafe_allow_html=True)
 
-# Tarjetas KPI personalizadas
 k1, k2, k3, k4 = st.columns(4)
 total_reg = len(df_filtered)
 rojos_reg = len(df_filtered[df_filtered['Veredicto'] == '🔴 Rojo (Ruido Fabricado)'])
@@ -160,7 +158,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Propagación Temporal", 
     "🔍 Auditoría Explicable (XAI)", 
     "🗺️ Mapa de Coordinación", 
-    "📋 Explorador de Datos Estructurado"
+    "📋 Tablas Analíticas y Datos"
 ])
 
 # --- TAB 1: PROPAGACIÓN ---
@@ -203,7 +201,7 @@ with tab2:
             st.info(f"**Texto Registrado:** *'{pub['Texto_Publicacion']}'*")
             
             m1, m2, m3 = st.columns(3)
-            m1.metric("Antigüedad de Cuenta", f"{pub['Antigüedad_Cuenta_Dias']} días")
+            m1.metric("Antigüedad de Cuenta", f"{pub['Antigüedad_Cuenta_Dias']} days")
             m2.metric("Velocidad de Viralización", f"{pub['Velocidad_Viralizacion']} ints/min")
             m3.metric("Contenido Reciclado", pub['Contenido_Reciclado'])
             
@@ -238,27 +236,91 @@ with tab3:
     fig_scatter.add_hline(y=10, line_dash="dash", line_color="#c2402d", annotation_text="Umbral de Velocidad Anómala")
     st.plotly_chart(fig_scatter, use_container_width=True)
 
-# --- TAB 4: EXPLORADOR DE DATOS ESTRUCTURADO ---
+# --- TAB 4: TABLAS ANALÍTICAS Y DATOS ---
 with tab4:
-    st.markdown("### Tabla Estructurada de Datos Procesados")
-    st.markdown("Visualización limpia y tabular de los registros con sus respectivas métricas de riesgo calculadas.")
+    st.markdown("### 📊 Módulo de Tablas Especializadas")
+    st.markdown("Consulta rápida de las estructuras analíticas clave del proyecto.")
     
-    # Tabla interactiva avanzada con barras de progreso y formato numérico limpio
-    st.dataframe(
-        df_filtered[['ID_Publicacion', 'Usuario_Handle', 'Plataforma', 'Perfil_Usuario', 'Veredicto', 'Score_Sospecha', 'Velocidad_Viralizacion', 'Contenido_Reciclado']],
-        use_container_width=True,
-        height=450,
-        column_config={
-            "Score_Sospecha": st.column_config.ProgressColumn(
-                "Índice Sospecha",
-                help="Puntaje de anomalía de 0 a 100",
-                format="%.1f",
-                min_value=0,
-                max_value=100,
-            ),
-            "Velocidad_Viralizacion": st.column_config.NumberColumn(
-                "Velocidad (ints/min)",
-                format="%.1f"
-            )
+    subtab1, subtab2, subtab3 = st.tabs([
+        "🚨 Top Cuentas Sospechosas (Bots)", 
+        "🔬 Firma Comportamental (Bots vs Resto)", 
+        "📋 Explorador General de Registros"
+    ])
+    
+    with subtab1:
+        st.markdown("#### Ranking de Cuentas con Mayor Índice de Anomalía")
+        st.markdown("Cuentas identificadas por el modelo con mayor puntaje de sospecha estructural[cite: 2].")
+        
+        # Generar tabla simulada de cuentas top sospechosas basada en la fuente 2
+        df_cuentas_top = df.sort_values(by="Score_Sospecha", ascending=False).head(10)[
+            ['Usuario_Handle', 'Score_Sospecha', 'Antigüedad_Cuenta_Dias', 'Num_Seguidores_Cuenta', 'Plataforma', 'Perfil_Usuario']
+        ].drop_duplicates(subset=['Usuario_Handle'])
+        
+        st.dataframe(
+            df_cuentas_top,
+            use_container_width=True,
+            column_config={
+                "Score_Sospecha": st.column_config.ProgressColumn(
+                    "Puntaje Sospecha",
+                    help="Nivel de anomalía detectado",
+                    format="%.1f",
+                    min_value=0,
+                    max_value=100
+                ),
+                "Num_Seguidores_Cuenta": st.column_config.NumberColumn(
+                    "Seguidores",
+                    format="%d"
+                )
+            }
+        )
+        
+    with subtab2:
+        st.markdown("#### Tabla Comparativa: Firma Comportamental")
+        st.markdown("Diferencias cuantitativas fundamentales entre las cuentas de brigada/bots y el resto de usuarios[cite: 1].")
+        
+        # Tabla estructurada basada en los hallazgos de la fuente 1
+        data_firma = {
+            "Métrica Evaluada": [
+                "Seguidores ganados por día de vida (promedio)",
+                "Velocidad de viralización (mediana en ints/min)",
+                "Diversidad léxica (textos únicos / totales)",
+                "Densidad de uso de mayúsculas"
+            ],
+            "Bot / Sospechoso": [
+                "4.764[cite: 1]", 
+                "14.95[cite: 1]", 
+                "0.63[cite: 1]", 
+                "15.7 %[cite: 1]"
+            ],
+            "Resto de Usuarios (Orgánicos)": [
+                "4 – 27[cite: 1]", 
+                "2.3 – 3.0[cite: 1]", 
+                "1.00[cite: 1]", 
+                "0.8 %[cite: 1]"
+            ]
         }
-    )
+        df_firma = pd.DataFrame(data_firma)
+        st.dataframe(df_firma, use_container_width=True, hide_index=True)
+        
+    with subtab3:
+        st.markdown("#### Explorador General de Registros Procesados")
+        st.markdown("Base de datos completa con los veredictos y métricas aplicadas a cada publicación[cite: 1, 2].")
+        
+        st.dataframe(
+            df_filtered[['ID_Publicacion', 'Usuario_Handle', 'Plataforma', 'Perfil_Usuario', 'Veredicto', 'Score_Sospecha', 'Velocidad_Viralizacion', 'Contenido_Reciclado']],
+            use_container_width=True,
+            height=400,
+            column_config={
+                "Score_Sospecha": st.column_config.ProgressColumn(
+                    "Índice Sospecha",
+                    help="Puntaje de anomalía de 0 a 100",
+                    format="%.1f",
+                    min_value=0,
+                    max_value=100,
+                ),
+                "Velocidad_Viralizacion": st.column_config.NumberColumn(
+                    "Velocidad (ints/min)",
+                    format="%.1f"
+                )
+            }
+        )
